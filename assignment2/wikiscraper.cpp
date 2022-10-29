@@ -32,20 +32,21 @@ using std::unordered_set;
 // BEGIN STUDENT CODE HERE
 bool valid_wikilink(const string& link) {
     // replace these lines!
-    (void)link;
-    throw std::invalid_argument("Not implemented yet.\n");
+    return std::all_of(link.begin(), link.end(), [](char c) {
+        return c != ':' && c != '#';
+    });
 }
 // END STUDENT CODE HERE
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 unordered_set<string> findWikiLinks(const string& inp) {
     /* Delimiter for start of a link  */
-    static const string delim = "href=\"/wiki/";
+    const static string delim = "href=\"/wiki/";
 
     unordered_set<string> ret;
 
     auto url_start = inp.begin();
-    auto end = inp.end();
+    auto end       = inp.end();
 
     while (true) {
         // TODO: ASSIGNMENT 2 TASK 1:
@@ -58,6 +59,7 @@ unordered_set<string> findWikiLinks(const string& inp) {
         // BEGIN STUDENT CODE HERE
         url_start = std::search(url_start, end, delim.begin(), delim.end());
         if (url_start == end) break;
+        url_start += delim.length();
         // END STUDENT CODE HERE
         ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,7 +86,7 @@ unordered_set<string> findWikiLinks(const string& inp) {
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         // BEGIN STUDENT CODE HERE (delete/edit this line)
-        string link;
+        string link = string(url_start, url_end);
         // END STUDENT CODE HERE
         ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,7 +110,7 @@ unordered_set<string> findWikiLinks(const string& inp) {
  */
 unordered_set<string> WikiScraper::getLinkSet(const string& page_name) {
     if (linkset_cache.find(page_name) == linkset_cache.end()) {
-        auto links = findWikiLinks(getPageSource(page_name));
+        auto links               = findWikiLinks(getPageSource(page_name));
         linkset_cache[page_name] = links;
     }
     return linkset_cache[page_name];
@@ -122,7 +124,8 @@ string createPageUrl(const string& page_name) {
     return "https://en.wikipedia.org/wiki/" + page_name;
 }
 
-void notFoundError(const string& msg, const string& page_name, const string& url) {
+void notFoundError(const string& msg, const string& page_name,
+                   const string& url) {
     const string title = "    AN ERROR OCCURED DURING EXECUTION.    ";
     const string border(title.size() + 4, '*');
     cerr << endl;
@@ -154,11 +157,13 @@ string WikiScraper::getPageSource(const string& page_name) {
 
         string ret = r.text;
         if (r.status_code != 200) {
-            notFoundError("Couldn't get page source. Have you entered a valid link?",
-                          page_name, url);
+            notFoundError(
+                "Couldn't get page source. Have you entered a valid link?",
+                page_name, url);
             return "";
         }
-        if (std::search(ret.begin(), ret.end(), not_found.begin(), not_found.end())
+        if (std::search(ret.begin(), ret.end(), not_found.begin(),
+                        not_found.end())
             != ret.end()) {
             notFoundError("Page does not exist!", page_name, url);
             return "";

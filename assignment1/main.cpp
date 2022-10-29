@@ -27,7 +27,7 @@ int main() {
     std::string filenames = "Available input files: ";
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         std::string filename = entry.path().string();
-        filename = filename.substr(filename.rfind("/") + 1);
+        filename             = filename.substr(filename.rfind("/") + 1);
         filenames += filename + ", ";
     }
     // omit last ", ".
@@ -55,7 +55,7 @@ int main() {
 
     for (int i = 0; i < pair_nums; ++i) {
         ifs >> start_page >> end_page;
-        outputLadders.push_back(findWikiLadder(start_page, end_page))
+        outputLadders.push_back(findWikiLadder(start_page, end_page));
     }
     /*
      * Print out all ladders in outputLadders.
@@ -69,7 +69,7 @@ int main() {
             cout << "Ladder found:" << endl;
             cout << "\t{";
             std::copy(ladder.begin(), ladder.end() - 1,
-                      std::ostream_iterator<string>(cout, ", "));
+                      std::ostream_iterator<string>(cout, " -> "));
 
             cout << ladder.back() << "}" << endl;
         }

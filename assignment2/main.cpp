@@ -38,63 +38,60 @@ using std::vector;
  */
 
 // TODO: ASSIGNMENT 2 TASK 5:
-// Please implement the following function, which should take in two sets of strings
-// and returns the number of common strings between the two sets. You should use
-// lambdas and std::count_if.
-// Estimated length: <4 lines
+// Please implement the following function, which should take in two sets of
+// strings and returns the number of common strings between the two sets. You
+// should use lambdas and std::count_if. Estimated length: <4 lines
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // BEGIN STUDENT CODE HERE
 int numCommonLinks(const unordered_set<string>& curr_set,
                    const unordered_set<string>& target_set) {
-    // replace all of these lines!
-    (void)target_set;
-    (void)curr_set;
-    return 0;
+    int num = 0;
+    for (auto& s : target_set) {
+        if (curr_set.find(s) != curr_set.end()) {
+            num++;
+        }
+    }
+    return num;
 }
 // END STUDENT CODE HERE
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-vector<string> findWikiLadder(const string& start_page, const string& end_page) {
+vector<string> findWikiLadder(const string& start_page,
+                              const string& end_page) {
     WikiScraper w;
 
     /* Create alias for container backing priority_queue */
-    using container = vector<vector<string>>;
+    using container                  = vector<vector<string>>;
     unordered_set<string> target_set = w.getLinkSet(end_page);
 
     // TODO: ASSIGNMENT 2 TASK 6:
-    // Please implement the comparator function that will be used in the priority queue.
-    // You'll need to consider what variables this lambda will need to capture, as well
-    // as what parameters it'll take in. Be sure to use the function you implemented in
-    // Task 1! Estimated length: <3 lines
+    // Please implement the comparator function that will be used in the
+    // priority queue. You'll need to consider what variables this lambda will
+    // need to capture, as well as what parameters it'll take in. Be sure to use
+    // the function you implemented in Task 1! Estimated length: <3 lines
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // BEGIN STUDENT CODE HERE
     auto cmp_fn = [&w, &target_set](const vector<string>& left,
                                     const vector<string>& right) {
-        // replace all of these lines.
-        (void)w;
-        (void)target_set;
-        (void)left;
-        (void)right;
-        return false;  // replace this line! make sure to use numCommonLinks.
+        int num_left  = numCommonLinks(target_set, w.getLinkSet(left.back()));
+        int num_right = numCommonLinks(target_set, w.getLinkSet(right.back()));
+        return num_left < num_right;
     };
     // END STUDENT CODE HERE
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     // TODO: ASSIGNMENT 2 TASK 7:
-    // Last exercise! please instantiate the priority queue for this algorithm, called
-    // "queue". Be sure to use your work from Task 2, cmp_fn, to instantiate our queue.
-    // Estimated length: 1 line
+    // Last exercise! please instantiate the priority queue for this algorithm,
+    // called "queue". Be sure to use your work from Task 2, cmp_fn, to
+    // instantiate our queue. Estimated length: 1 line
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // BEGIN STUDENT CODE HERE
-    // something like priority_queue<...> queue(...);
-    // please delete ALL 4 of these lines! they are here just for the code to compile.
-    std::priority_queue<vector<string>> queue;
-    throw std::invalid_argument("Not implemented yet.\n");
-    return {};
-
+    std::priority_queue<vector<string>, vector<vector<string>>,
+                        decltype(cmp_fn)>
+        queue(cmp_fn);
     // END STUDENT CODE HERE
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -139,7 +136,7 @@ int main() {
 
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         std::string filename = entry.path().string();
-        filename = filename.substr(filename.rfind("/") + 1);
+        filename             = filename.substr(filename.rfind("/") + 1);
         filenames += filename + ", ";
     }
     // omit last ", ".
