@@ -3,3 +3,4 @@ build/
 build_and_run.sh
 CMakeLists.txt
 .cache
+.vscode

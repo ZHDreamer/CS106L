@@ -57,12 +57,10 @@ int numCommonLinks(const unordered_set<string>& curr_set,
 // END STUDENT CODE HERE
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-vector<string> findWikiLadder(const string& start_page,
-                              const string& end_page) {
+vector<string> findWikiLadder(const string& start_page, const string& end_page) {
     WikiScraper w;
-
     /* Create alias for container backing priority_queue */
-    using container                  = vector<vector<string>>;
+    using container = vector<vector<string>>;
     unordered_set<string> target_set = w.getLinkSet(end_page);
 
     // TODO: ASSIGNMENT 2 TASK 6:
@@ -75,7 +73,7 @@ vector<string> findWikiLadder(const string& start_page,
     // BEGIN STUDENT CODE HERE
     auto cmp_fn = [&w, &target_set](const vector<string>& left,
                                     const vector<string>& right) {
-        int num_left  = numCommonLinks(target_set, w.getLinkSet(left.back()));
+        int num_left = numCommonLinks(target_set, w.getLinkSet(left.back()));
         int num_right = numCommonLinks(target_set, w.getLinkSet(right.back()));
         return num_left < num_right;
     };
@@ -89,9 +87,8 @@ vector<string> findWikiLadder(const string& start_page,
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // BEGIN STUDENT CODE HERE
-    std::priority_queue<vector<string>, vector<vector<string>>,
-                        decltype(cmp_fn)>
-        queue(cmp_fn);
+    std::priority_queue<vector<string>, vector<vector<string>>, decltype(cmp_fn)> queue(
+        cmp_fn);
     // END STUDENT CODE HERE
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -136,7 +133,7 @@ int main() {
 
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         std::string filename = entry.path().string();
-        filename             = filename.substr(filename.rfind("/") + 1);
+        filename = filename.substr(filename.rfind("/") + 1);
         filenames += filename + ", ";
     }
     // omit last ", ".
