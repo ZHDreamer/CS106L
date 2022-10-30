@@ -145,41 +145,37 @@ int main() {
     cout << "Enter a file name: ";
     string filename;
     getline(cin, filename);
+    /*
+        TODO: Create a filestream from the filename.
+        For each pair {start_page, end_page} in the input file,
+        retrieve the result of findWikiLadder(start_page, end_page)
+        and append that vector to outputLadders.
+    */
+    // Write code here
+    ifstream ifs(filename, ifstream::in);
+    int      pair_nums;
+    string   start_page, end_page;
 
-    ifstream in(filename);
-    int      numPairs;
-    // parse the first line as the number of tokens
-    in >> numPairs;
+    ifs >> pair_nums;
 
-    // loop through each line, parsing out page names and calling findWikiLadder
-    string startPage, endPage;
-    for (int i = 0; i < numPairs; i++) {
-        // parse the start and end page from each line
-        in >> startPage >> endPage;
-        outputLadders.push_back(findWikiLadder(startPage, endPage));
+    for (int i = 0; i < pair_nums; ++i) {
+        ifs >> start_page >> end_page;
+        outputLadders.push_back(findWikiLadder(start_page, end_page));
     }
-
     /*
      * Print out all ladders in outputLadders.
      * We've already implemented this for you!
      */
+    // Write code here
     for (auto& ladder : outputLadders) {
         if (ladder.empty()) {
-            cout << "No ladder found!" << endl;
+            cout << "No ladder found" << endl;
         } else {
             cout << "Ladder found:" << endl;
-            cout << "\t"
-                 << "{";
-
+            cout << "\t{";
             std::copy(ladder.begin(), ladder.end() - 1,
-                      std::ostream_iterator<string>(cout, ", "));
-            /*
-             * The above is an alternate way to print to cout using the
-             * STL algorithms library and iterators. This is equivalent to:
-             *    for (size_t i = 0; i < ladder.size() - 1; ++i) {
-             *        cout << ladder[i] << ", ";
-             *    }
-             */
+                      std::ostream_iterator<string>(cout, " -> "));
+
             cout << ladder.back() << "}" << endl;
         }
     }
