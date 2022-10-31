@@ -147,7 +147,7 @@ class HashMap {
      *
      * Complexity: O(1) (inlined because function is short)
      */
-    inline size_t size();
+    inline size_t size() const noexcept;
 
     /*
      * Returns whether the HashMap is empty.
@@ -160,7 +160,7 @@ class HashMap {
      *
      * Complexity: O(1) (inlined because function is short)
      */
-    inline bool empty();
+    inline bool empty() const noexcept;
 
     /*
      * Returns the load_factor, defined as size/bucket_count.
@@ -177,7 +177,7 @@ class HashMap {
      * factor is too high. If you want as an extension, you can implement automatic
      * rehashing.
      */
-    inline float load_factor();
+    inline float load_factor() const noexcept;
 
     /*
      * Returns the number of buckets.
@@ -198,7 +198,7 @@ class HashMap {
      * A noexcept function that throws an exception will automatically
      * terminate the program.
      */
-    inline size_t bucket_count() const;
+    inline size_t bucket_count() const noexcept;
 
     /*
      * Returns whether or not the HashMap contains the given key.
@@ -217,7 +217,7 @@ class HashMap {
      * libraries and will be available in the future, we will implement
      * map.contains(key).
      */
-    bool contains(const K& key);
+    bool contains(const K& key) const noexcept;
 
     /*
      * Returns a l-value reference to the mapped value given a key.
@@ -241,6 +241,8 @@ class HashMap {
      */
     M& at(const K& key);
 
+    const M& at(const K& key) const;
+
     /*
      * Removes all K/M pairs the HashMap.
      *
@@ -257,7 +259,7 @@ class HashMap {
      * and is ready to be inserted again, as if it were a newly constructed HashMap with
      * no elements. The number of buckets should stay the same.
      */
-    void clear();
+    void clear() noexcept;
 
     /*
      * Finds the element with the given key, and returns an iterator to that element.
@@ -273,6 +275,8 @@ class HashMap {
      * Complexity: O(1) amortized average case, O(N) worst case, N = number of elements
      */
     iterator find(const K& key);
+
+    const_iterator find(const K& key) const;
 
     /*
      * Inserts the K/M pair into the HashMap, if the key does not already exist.
@@ -367,7 +371,7 @@ class HashMap {
      * Usage:
      *      auto iter = map.begin();
      */
-    iterator begin();
+    iterator begin() noexcept;
 
     /*
      * Returns a const_iterator to the first element.
@@ -376,7 +380,7 @@ class HashMap {
      * Usage:
      *      auto iter = cmap.begin();
      */
-    const_iterator begin() const;
+    const_iterator begin() const noexcept;
 
     /*
      * Returns an iterator to one past the last element.
@@ -385,7 +389,16 @@ class HashMap {
      * Usage:
      *      while (iter != map.end()) {...}
      */
-    iterator end();
+    iterator end() noexcept;
+
+    /*
+     * Returns an const_iterator to one past the last element.
+     * This overload is used when the HashMap is const.
+     *
+     * Usage:
+     *      while (iter != cmap.end()) {...}
+     */
+    const_iterator end() const noexcept;
 
     /*
      * Function that will print to std::cout the contents of the hash table as
@@ -408,7 +421,7 @@ class HashMap {
      * Tip: place map.debug() in various places in the test cases to figure out which
      * operation is failing. Super useful when we debugged our code.
      */
-    void debug();
+    void debug() const;
 
     /* EXTRA CONSTURCTORS */
 
@@ -471,6 +484,57 @@ class HashMap {
     // TODO: declare headers for copy constructor/assignment, move
     // constructor/assignment
 
+    /*
+     * Copy constructor
+     * Creates a HashMap copy from rhs
+     *
+     * Usage:
+     * 	    HashMap<char, int> rhs{{'a', 3}, {'b', 4}, {'c', 5}};
+     * 	    HashMap<char, int> map(rhs);
+     *
+     * Complexity: O(N), where N = rhs.size()
+     */
+    HashMap(const HashMap& rhs);
+
+    /*
+     * Copy assignment
+     * Copy the element from rhs to lhs
+     *
+     * Usage:
+     * 	    HashMap<char, int> rhs{{'a', 3}, {'b', 4}, {'c', 5}};
+     * 	    HashMap<char, int> map;
+     *      map = rhs
+     *
+     * Complexity: O(N), where N = rhs.size()
+     */
+    HashMap& operator=(const HashMap& rhs);
+
+    /*
+     * Move consructor
+     * Creates HashMap by move the elements in the rhs to lhs
+     *
+     * Usage:
+     *      HashMap<char, int> rhs{{'a', 3}, {'b', 4}, {'c', 5}};
+     *	    HashMap<char, int> map(std::move(rhs)); // now rhs should be empty
+     *
+     * Complexity: O(1)
+     */
+    HashMap(HashMap&& rhs);
+
+    /*
+     * Move assignment
+     * Move the element from rhs to lhs
+     *
+     * Usage:
+     *      HashMap<char, int> rhs{{'a', 3}, {'b', 4}, {'c', 5}};
+     * 	    HashMap<char, int> map;
+     *      map = std::move(rhs); // now rhs should be empty
+     *
+     * Complexity: O(1)
+     */
+
+    HashMap& operator=(HashMap&& rhs);
+
     private:
     /*
      * node structure represented a node in a linked list.
@@ -479,7 +543,7 @@ class HashMap {
      * This is implemented in the private section as clients should not be dealing
      * with anything related to the node struct.
      *
-     * Usage;
+     * Usage:
      *      HashMap<K, M, H>::node n;
      *      n->value = {3, 4};
      *      n->next = nullptr;
@@ -540,7 +604,7 @@ class HashMap {
      *
      * Hint: on the assignment, you should NOT need to call this function.
      */
-    size_t first_not_empty_bucket() const;
+    size_t first_not_empty_bucket() const noexcept;
 
     /*
      * Creates an iterator that points to the element curr->value.

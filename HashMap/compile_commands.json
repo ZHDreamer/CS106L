@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/sbin/g++",
+      "-c",
+      "-Wall",
+      "-Werror",
+      "-std=c++17",
+      "-o",
+      "main",
+      "main.cpp"
+    ],
+    "directory": "/mnt/d/Code/Course/Stanford/CS106L/assignment3",
+    "file": "/mnt/d/Code/Course/Stanford/CS106L/assignment3/main.cpp",
+    "output": "/mnt/d/Code/Course/Stanford/CS106L/assignment3/main"
+  }
+]
