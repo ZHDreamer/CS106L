@@ -1,24 +1,25 @@
 #include <iostream>
 #include <sstream>
+#include <string>
 
-using std::cout;    using std::endl;
-using std::cin;     using std::string;
-
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
 
 string IntegerToString(int myInt) {
     /*
      * We'll specifically use an ostringstream, which is just a
      * stringstream that you can only put things into.
      */
-
+    std::ostringstream converter;
     /*
      * Putting the int into the ostringstream will convert
      * it into a string format.
      */
-
-
+    converter << myInt;
     /* Ask for the string inside the ostringstream. */
-    return "";
+    return converter.str();
 }
 
 int StringToInteger(const string& str) {
@@ -29,19 +30,19 @@ int StringToInteger(const string& str) {
      * You can set its internal string when creating it or by doing
      * converter.str("string_to_set");
      */
-
-
+    std::istringstream converter(str);
     /*
      * Try getting an int from the stream. If this is not succesful
      * then user input was not a valid input.
      */
-    
-    
+    int result;
+    if (converter >> result) {
         /*
          * See if we can extract a char from the stream.
          * If so, the user had junk after a valid int in their input.
          */
-        
+        char rem;
+        if (converter >> rem) {
             /*
              * Throwing an error is a way of propogating up the funcion
              * callstack that something went wrong. Previous functions can
@@ -52,43 +53,49 @@ int StringToInteger(const string& str) {
              * A domain_error is defined in the standard namespace as an error
              * to signal that the input arguments to the function were not valid.
              */
-            
-        
-
-    
-    /* If read unsuccessful, throw a domain error with a helpful error message. */
-    return 0;
+            throw std::domain_error(string("Unexpected character in input: ") + rem);
+        }
+        /* If read unsuccessful, throw a domain error with a helpful error message. */
+        return result;
+    }
+    /* throw a domain error with a helpful error message. */
+    throw std::domain_error(string("Failed to convert input: ") + str);
 }
 
 int getInteger() {
-        /* First we get a line of input from the user. */
-    
+    /* First we get a line of input from the user. */
+    string line;
+    std::getline(cin, line);
+    /*
+     * We'll  use an istringstream because we only want to pull data
+     * out of the stream once we have put the string's contents in it.
+     */
+    std::istringstream converter(line);
+    /*
+     * Try getting an int from the stream. If this is not succesful
+     * then user input was not a valid input.
+     */
+    int result;
+    if (converter >> result) {
         /*
-         * We'll  use an istringstream because we only want to pull data
-         * out of the stream once we have put the string's contents in it.
+         * See if we can extract a char from the stream.
+         * If so, the user had junk after a valid int in their input.
          */
-        
-
+        char rem;
+        if (converter >> rem) {
+            throw std::domain_error(string("Unexpected character in input: ") + rem);
+        }
         /*
-         * Try getting an int from the stream. If this is not succesful
-         * then user input was not a valid input.
+         * Input was succesfully converted to int with no
+         * trailing stuff at the end.
          */
-        
-            /*
-             * See if we can extract a char from the stream.
-             * If so, the user had junk after a valid int in their input.
-             */
-            
-            /*
-             * Input was succesfully converted to int with no
-             * trailing stuff at the end.
-             */
-                
-    return 0;
+        return result;
+    }
+    /* throw a domain error with a helpful error message. */
+    throw std::domain_error(string("Failed to convert input: ") + line);
 }
 
 int main() {
-   int x = getInteger();
-   cout << "We got: " << x << endl;
-
+    int x = getInteger();
+    cout << "We got: " << x << endl;
 }
